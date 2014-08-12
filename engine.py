@@ -3,13 +3,18 @@ import re
 import socket
 import logging
 
-
+'''
+    Some Information about request will wrapped in Info objects
+'''
 class Info:
     def __init__(self, ip, headers, opened_port):
         self.opened_port = opened_port
         self.headers = headers
         self.ip = ip
 
+'''
+    Our Webserver engine which has some features like starting and registering actions on it.
+'''
 
 class WebServer:
     def __init__(self, port, host=''):
