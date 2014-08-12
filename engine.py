@@ -1,11 +1,7 @@
+__author__ = 'soroosh'
 import re
 import socket
-from actions import HelloWorldAction, PicAction, ClientAction, TimeAction, DirAction, MyAction
-
-__author__ = 'soroosh'
 import logging
-
-logging.basicConfig(level=logging.INFO)
 
 
 class Info:
@@ -30,6 +26,7 @@ class WebServer:
     def start(self):
         self._socket.bind((self.host, self.port))
         self._socket.listen(100)
+        logging.info("Web Server started on port: %s" % self.port)
         self._run_event_loop()
 
     def _run_event_loop(self):
@@ -49,16 +46,16 @@ class WebServer:
                     if match:
                         m = re.match(r'.*\r\nHost: (.*)\r\n', req, re.MULTILINE)
                         if not m:
-                            params =[]
+                            params = []
                             host = ''
                         else:
                             params = match.groups()
-                            host =m.group(1)
+                            host = m.group(1)
 
                         csock.sendall(self._generate_output(action.response(request=req, ip=caddr[0], port=caddr[1], params=params, host=host), action.mime_type()))
                         sent = True
                         break
-                if not re.match('^GET.*',req):
+                if not re.match('^GET.*', req):
                     csock.sendall(
                         self._generate_500_output("<html><body>Method Not Allowed</body></html>")
                     )
@@ -92,16 +89,6 @@ Content - Type: %s
 Content - Type: %s
 
 %s""" % ('text/html', content)
-
-
-s = WebServer(8007)
-s.register_action(HelloWorldAction())
-s.register_action(PicAction())
-s.register_action(ClientAction(s.get_info))
-s.register_action(TimeAction())
-s.register_action(DirAction())
-s.register_action(MyAction())
-s.start()
 
 
 
