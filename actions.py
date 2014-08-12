@@ -57,3 +57,19 @@ class TimeAction(Action):
         return '<html><body>Time on %s</body></html>' % (kwargs['host'] + ' is ' + str(datetime.now()))
 
 
+class DirAction(Action):
+    def regex(self):
+        return 'GET /server/(.*)\sHTTP/1'
+
+    def mime_type(self):
+        return 'text/html'
+
+    def response(self, *args, **kwargs):
+        print kwargs['params']
+        try:
+            with open(kwargs['params'][0], 'r') as f:
+                return '<html><body>%s</body></html>' % (f.read().replace('\r\n', '<br />').replace('\n', '<br />'))
+        except Exception as e:
+            return '<html><body>File does not exist</body></html>'
+
+

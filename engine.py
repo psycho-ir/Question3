@@ -1,6 +1,6 @@
 import re
 import socket
-from actions import HelloWorldAction, PicAction, ClientAction, TimeAction
+from actions import HelloWorldAction, PicAction, ClientAction, TimeAction, DirAction
 
 __author__ = 'soroosh'
 import logging
@@ -49,7 +49,7 @@ class WebServer:
                     if match:
                         m =re.match(r'.*\r\nHost: (.*)\r\n',req,re.MULTILINE)
 
-                        csock.sendall(self._generate_output(action.response(host=m.group(1)), action.mime_type()))
+                        csock.sendall(self._generate_output(action.response(params=match.groups(), host=m.group(1)), action.mime_type()))
                         sent = True
                         break
                 if not sent:
@@ -69,11 +69,12 @@ Content - Type: %s
 %s""" % (mimetype, content)
 
 
-s = WebServer(8000)
+s = WebServer(8008)
 s.register_action(HelloWorldAction())
 s.register_action(PicAction())
 s.register_action(ClientAction(s.get_info))
 s.register_action(TimeAction())
+s.register_action(DirAction())
 s.start()
 
 
