@@ -12,17 +12,21 @@
 <h2>
     Different Modules
 </h2>
+
 <h3>
     engine module
 </h3>
+
 <p>
     This module is the core of our webserver and has some features like starting webserver and registering action on it.
 </p>
+
 <h3>actions</h3>
+
 <p>
     for adding any new functionality to our website we need to create an Action and registering it on our webserver instant.
     Every Action should have:
-    <ul>
+<ul>
     <li>
         A regex what present urls that this action will call for them.
     </li>
@@ -32,14 +36,42 @@
     <li>
         A response which creates response correspond to request parameters
     </li>
-    </ul>
-</p>
-
+</ul>
 you can see different implementations of Action in actions.py module
 
-<h1>
+</p>
+<h2>
+    Note: You can read pydocs for impelementation details
+</h2>
 
-</h1>
+<h3>
+    Examples
+</h3>
+
+<p>
+    you can use these samples after running run_me.py
+<ul>
+    <li>
+        <a href="http://localhost:8181" target="_blank">Hello World</a>
+    </li>
+    <li>
+        <a href="http://localhost:8181/pic" target="_blank">A picture</a>
+    </li>
+    <li>
+        <a href="http://localhost:8181/my.aspx" target="_blank">My request</a>
+    </li>
+    <li>
+        <a href="http://localhost:8181/clients.html" target="_blank">All requests</a>
+    </li>
+    <li>
+        <a href="http://localhost:8181/server/engine.py" target="_blank">Read engine.py</a>
+    </li>
+    <li>
+        <a href="http://localhost:8181/time.php" target="_blank">Get Time</a>
+    </li>
+</ul>
+</p>
+
 
 </body>
 </html>
