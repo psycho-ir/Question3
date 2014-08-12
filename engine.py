@@ -1,6 +1,6 @@
 import re
 import socket
-from actions import HelloWorldAction, PicAction, ClientAction, TimeAction, DirAction
+from actions import HelloWorldAction, PicAction, ClientAction, TimeAction, DirAction, MyAction
 
 __author__ = 'soroosh'
 import logging
@@ -47,15 +47,28 @@ class WebServer:
                 for action in self.actions:
                     match = re.match(action.regex(), req)
                     if match:
-                        m =re.match(r'.*\r\nHost: (.*)\r\n',req,re.MULTILINE)
+                        m = re.match(r'.*\r\nHost: (.*)\r\n', req, re.MULTILINE)
+                        if not m:
+                            params =[]
+                            host = ''
+                        else:
+                            params = match.groups()
+                            host =m.group(1)
 
-                        csock.sendall(self._generate_output(action.response(params=match.groups(), host=m.group(1)), action.mime_type()))
+                        csock.sendall(self._generate_output(action.response(request=req, ip=caddr[0], port=caddr[1], params=params, host=host), action.mime_type()))
                         sent = True
                         break
+                if not re.match('^GET.*',req):
+                    csock.sendall(
+                        self._generate_500_output("<html><body>Method Not Allowed</body></html>")
+                    )
+                    sent = True
+
                 if not sent:
                     csock.sendall(
-                        self._generate_output("<html><body>default</body></html>")
+                        self._generate_404_output("<html><body>Not Found</body></html>")
                     )
+
             finally:
                 csock.close()
 
@@ -68,13 +81,26 @@ Content - Type: %s
 
 %s""" % (mimetype, content)
 
+    def _generate_404_output(self, content):
+        return """HTTP/1.1 404 NOT FOUND
+Content - Type: %s
 
-s = WebServer(8008)
+%s""" % ('text/html', content)
+
+    def _generate_500_output(self, content):
+        return """HTTP/1.1 500 Method Not Allowed
+Content - Type: %s
+
+%s""" % ('text/html', content)
+
+
+s = WebServer(8007)
 s.register_action(HelloWorldAction())
 s.register_action(PicAction())
 s.register_action(ClientAction(s.get_info))
 s.register_action(TimeAction())
 s.register_action(DirAction())
+s.register_action(MyAction())
 s.start()
 
 

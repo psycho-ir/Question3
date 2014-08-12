@@ -57,6 +57,18 @@ class TimeAction(Action):
         return '<html><body>Time on %s</body></html>' % (kwargs['host'] + ' is ' + str(datetime.now()))
 
 
+class MyAction(Action):
+    def regex(self):
+        return 'GET /my.aspx\sHTTP/1'
+
+    def mime_type(self):
+        return 'text/html'
+
+    def response(self, *args, **kwargs):
+        template = '<html><body>Request: %s <br /> User Ip: %s <br /> User Port: %s</body></html>'
+        return template % (kwargs['request'], kwargs['ip'], kwargs['port'])
+
+
 class DirAction(Action):
     def regex(self):
         return 'GET /server/(.*)\sHTTP/1'
@@ -65,7 +77,6 @@ class DirAction(Action):
         return 'text/html'
 
     def response(self, *args, **kwargs):
-        print kwargs['params']
         try:
             with open(kwargs['params'][0], 'r') as f:
                 return '<html><body>%s</body></html>' % (f.read().replace('\r\n', '<br />').replace('\n', '<br />'))
